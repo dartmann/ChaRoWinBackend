@@ -69,7 +69,8 @@
 		<appender-ref ref="controller.file" />
 	</logger>
 
-	<logger name="de.davidartmann.charowinbackend">
+	<!-- set additivity to false, so we do not log twice -->
+	<logger name="de.davidartmann.charowinbackend" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
