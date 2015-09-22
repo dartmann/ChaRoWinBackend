@@ -1,4 +1,4 @@
-package de.davidartmann.fitnessbackend.repository;
+package de.davidartmann.charowinbackend.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

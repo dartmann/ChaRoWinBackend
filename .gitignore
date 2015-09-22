@@ -28,3 +28,9 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+####################################
+# Custom files
+####################################
+application.properties
+application-test.properties

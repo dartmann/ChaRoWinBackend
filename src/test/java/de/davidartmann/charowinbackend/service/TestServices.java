@@ -1,4 +1,4 @@
-package de.davidartmann.fitnessbackend.service;
+package de.davidartmann.charowinbackend.service;
 
 import java.util.ArrayList;
 import java.util.List;

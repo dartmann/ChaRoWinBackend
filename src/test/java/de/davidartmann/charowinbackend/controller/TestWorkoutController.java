@@ -1,4 +1,4 @@
-package de.davidartmann.fitnessbackend.controller;
+package de.davidartmann.charowinbackend.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,25 +26,26 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.davidartmann.charowinbackend.dto.ExerciseDto;
-import de.davidartmann.charowinbackend.model.Exercise;
-import de.davidartmann.charowinbackend.service.ExerciseService;
+import de.davidartmann.charowinbackend.dto.WorkoutDto;
+import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.constants.Weekday;
+import de.davidartmann.charowinbackend.service.WorkoutService;
 
 @Rollback(value=true)
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = "classpath:spring/servlet-test-context.xml")
-public class TestExerciseController {
+public class TestWorkoutController {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private ExerciseService exerciseService;
+	private WorkoutService workoutService;
 	
 	private MockMvc mockMvc;
-	private ExerciseDto dto;
-	private String exerciseApi = "/api/exercise/";
+	private WorkoutDto dto;
+	private String workoutApi = "/api/workout/";
 	private ObjectMapper mapper;
 	
 	@Before
@@ -55,15 +56,17 @@ public class TestExerciseController {
 		mapper.setSerializationInclusion(
 				com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
 		
-		dto = new ExerciseDto();
+		dto = new WorkoutDto();
 		dto.setActive(true);
-		dto.setName("test exercise");
+		dto.setName("test workout");
+		dto.setNumberOfDay(Weekday.FRIDAY_NUMERIC);
+		dto.setWeekday(Weekday.FRIDAY);
 	}
 	
 	@Test
 	public void create() {
 		try {
-			mockMvc.perform(post(exerciseApi)
+			mockMvc.perform(post(workoutApi)
 					.accept(MediaType.APPLICATION_JSON_VALUE)
 					.content(mapper.writeValueAsBytes(dto))
 					.contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -77,11 +80,10 @@ public class TestExerciseController {
 	
 	@Test
 	public void deleteById() {
-		Exercise exercise = exerciseService.create(dto);
+		Workout workout = workoutService.create(dto);
 		try {
-			mockMvc.perform(delete(exerciseApi+exercise.getId())
-					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.contentType(MediaType.APPLICATION_JSON_VALUE))
+			mockMvc.perform(delete(workoutApi+workout.getId())
+					.accept(MediaType.APPLICATION_JSON_VALUE))
 					.andExpect(status().isOk())
 					.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 					.andExpect(content().string("true"))
@@ -94,7 +96,7 @@ public class TestExerciseController {
 	@Test
 	public void getAll() {
 		try {
-			mockMvc.perform(get(exerciseApi+"all")
+			mockMvc.perform(get(workoutApi+"all")
 					.accept(MediaType.APPLICATION_JSON_VALUE))
 					.andExpect(status().isOk())
 					.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -106,9 +108,9 @@ public class TestExerciseController {
 	
 	@Test
 	public void getById() {
-		Exercise exercise = exerciseService.create(dto);
+		Workout workout = workoutService.create(dto);
 		try {
-			mockMvc.perform(get(exerciseApi+exercise.getId())
+			mockMvc.perform(get(workoutApi+workout.getId())
 					.accept(MediaType.APPLICATION_JSON_VALUE))
 					.andExpect(status().isOk())
 					.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -120,14 +122,14 @@ public class TestExerciseController {
 	
 	@Test
 	public void getByIds() {
-		Exercise exercise = exerciseService.create(dto);
-		dto.setName("test exercise 2");
-		Exercise exercise2 = exerciseService.create(dto);
+		Workout workout = workoutService.create(dto);
+		dto.setActive(false);
+		Workout workout2 = workoutService.create(dto);
 		List<Long> ids = new ArrayList<Long>();
-		ids.add(exercise.getId());
-		ids.add(exercise2.getId());
+		ids.add(workout.getId());
+		ids.add(workout2.getId());
 		try {
-			mockMvc.perform(get(exerciseApi)
+			mockMvc.perform(get(workoutApi)
 					.accept(MediaType.APPLICATION_JSON_VALUE)
 					.content(mapper.writeValueAsBytes(ids))
 					.contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -141,10 +143,10 @@ public class TestExerciseController {
 	
 	@Test
 	public void updateById() {
-		Exercise exercise = exerciseService.create(dto);
+		Workout workout = workoutService.create(dto);
 		dto.setActive(false);
 		try {
-			mockMvc.perform(post(exerciseApi+exercise.getId())
+			mockMvc.perform(post(workoutApi+workout.getId())
 					.accept(MediaType.APPLICATION_JSON_VALUE)
 					.content(mapper.writeValueAsBytes(dto))
 					.contentType(MediaType.APPLICATION_JSON_VALUE))
