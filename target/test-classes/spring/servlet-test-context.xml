@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+  
+    <!-- include the PropertyPlaceholderConfigurer -->
+    <bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:config/application-test.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+  	<!-- scans packages to find and register beans within the application context -->
+  	<context:component-scan base-package="de.davidartmann.fitnessbackend" />
+  	
+  	<!-- looks up Spring Data repositories -->
+  	<jpa:repositories base-package="de.davidartmann.fitnessbackend.repository" />
+  	
+    <!-- declares explicit support for annotation-driven MVC controllers 
+    (i.e. @RequestMapping, @Controller, although support for those is the default behaviour), 
+    as well as adding support for declarative validation via @Valid and message body marshalling 
+    with @RequestBody/ResponseBody. -->
+    <mvc:annotation-driven />
+    
+    <!-- This tag allows for mapping the DispatcherServlet to "/" (all extensions etc) -->
+	<mvc:default-servlet-handler />
+    
+	<!-- Database config -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+    	<property name="driverClassName" value="${db.driverClassName}" />  
+  		<property name="url" value="${db.url}" />
+  		<property name="username" value="${db.user}" />
+  		<property name="password" value="${db.password}" />
+  		<property name="maxTotal" value="${db.maxTotal}" />
+		<property name="maxWaitMillis" value="${db.maxWaitMillis}" />
+    </bean>
+    
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+    	<property name="showSql" value="false" />
+    	<property name="generateDdl" value="true" />
+    	<property name="database" value="MYSQL" />
+    </bean>
+ 	
+ 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+ 		<property name="dataSource" ref="dataSource" />
+ 		<property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+    	<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+    	<property name="jpaProperties">
+        	<props>
+        	    <!-- This is similiar to hibernate.cfg.xml stuff -->
+        		<prop key="hibernate.hbm2ddl.auto">update</prop>
+            	<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+            	<prop key="hibernate.show_sql">false</prop>
+        	</props>
+    	</property>
+    	<property name="packagesToScan" value="de.davidartmann.fitnessbackend.model" />
+ 	</bean>
+ 	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">  
+  		<property name="entityManagerFactory" ref="entityManagerFactory" />  
+ 	</bean>
+ 	
+ 	<tx:annotation-driven transaction-manager="transactionManager" />
+ 	
+ 	<bean id="persistenceExceptionTranslationPostProcessor" 
+ 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+     
+    <!-- Configure to plugin JSON as request and response in method handler -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+     
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <bean id="jsonMessageConverter" 
+    	class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    </bean>
+    
+</beans>

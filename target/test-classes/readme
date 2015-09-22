@@ -1,0 +1,2 @@
+log4j.xml in default maven classpath (src/test/resources), because it's the easiest way
+without overwriting SpringJUnit4ClassRunner

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p: %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Application log files -->
+	<appender name="controller.file" class="org.apache.log4j.RollingFileAppender">
+		<param name="MaxFileSize" value="4096KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="file" value="${catalina.home}/logs/fitnessbackend/controller.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="services.file" class="org.apache.log4j.RollingFileAppender">
+		<param name="MaxFileSize" value="4096KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="file" value="${catalina.home}/logs/fitnessbackend/services.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="errors.file" class="org.apache.log4j.RollingFileAppender">
+		<param name="MaxFileSize" value="4096KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="file" value="${catalina.home}/logs/fitnessbackend/errors.log" />
+		<param name="threshold" value="warn" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Framework log files -->
+	<appender name="hibernate.file" class="org.apache.log4j.RollingFileAppender">
+		<param name="MaxFileSize" value="4096KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="file" value="${catalina.home}/logs/fitnessbackend/hibernate.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="spring.file" class="org.apache.log4j.RollingFileAppender">
+		<param name="MaxFileSize" value="4096KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="file" value="${catalina.home}/logs/fitnessbackend/springframework.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Application Loggers -->
+	<logger name="de.davidartmann.fitnessbackend.service">
+		<level value="debug" />
+		<appender-ref ref="services.file" />
+	</logger>
+
+	<logger name="de.davidartmann.fitnessbackend.controller">
+		<level value="debug" />
+		<appender-ref ref="controller.file" />
+	</logger>
+
+	<logger name="de.davidartmann.fitnessbackend">
+		<level value="debug" />
+		<appender-ref ref="console" />
+	</logger>
+
+	<!-- Framework loggers -->
+	<logger name="org.springframework">
+		<level value="info" />
+		<appender-ref ref="spring.file" />
+	</logger>
+
+	<logger name="org.hibernate">
+		<level value="info" />
+		<appender-ref ref="hibernate.file" />
+	</logger>
+
+	<!-- Root Logger -->
+	<root>
+		<level value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="errors.file" />
+	</root>
+
+</log4j:configuration>
