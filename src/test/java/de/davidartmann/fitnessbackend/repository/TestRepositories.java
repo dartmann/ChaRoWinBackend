@@ -17,16 +17,24 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.davidartmann.fitnessbackend.model.Dietplan;
-import de.davidartmann.fitnessbackend.model.Exercise;
-import de.davidartmann.fitnessbackend.model.Food;
-import de.davidartmann.fitnessbackend.model.Meal;
-import de.davidartmann.fitnessbackend.model.Muscle;
-import de.davidartmann.fitnessbackend.model.User;
-import de.davidartmann.fitnessbackend.model.Workout;
-import de.davidartmann.fitnessbackend.model.WorkoutSession;
-import de.davidartmann.fitnessbackend.model.constants.ActivityIndex;
-import de.davidartmann.fitnessbackend.model.constants.Weekday;
+import de.davidartmann.charowinbackend.model.Dietplan;
+import de.davidartmann.charowinbackend.model.Exercise;
+import de.davidartmann.charowinbackend.model.Food;
+import de.davidartmann.charowinbackend.model.Meal;
+import de.davidartmann.charowinbackend.model.Muscle;
+import de.davidartmann.charowinbackend.model.User;
+import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.WorkoutSession;
+import de.davidartmann.charowinbackend.model.constants.ActivityIndex;
+import de.davidartmann.charowinbackend.model.constants.Weekday;
+import de.davidartmann.charowinbackend.repository.DietplanRepository;
+import de.davidartmann.charowinbackend.repository.ExerciseRepository;
+import de.davidartmann.charowinbackend.repository.FoodRepository;
+import de.davidartmann.charowinbackend.repository.MealRepository;
+import de.davidartmann.charowinbackend.repository.MuscleRepository;
+import de.davidartmann.charowinbackend.repository.UserRepository;
+import de.davidartmann.charowinbackend.repository.WorkoutRepository;
+import de.davidartmann.charowinbackend.repository.WorkoutSessionRepository;
 
 @Rollback(value=true)
 @Transactional

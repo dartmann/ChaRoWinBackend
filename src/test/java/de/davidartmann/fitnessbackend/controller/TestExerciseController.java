@@ -26,9 +26,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.davidartmann.fitnessbackend.dto.ExerciseDto;
-import de.davidartmann.fitnessbackend.model.Exercise;
-import de.davidartmann.fitnessbackend.service.ExerciseService;
+import de.davidartmann.charowinbackend.dto.ExerciseDto;
+import de.davidartmann.charowinbackend.model.Exercise;
+import de.davidartmann.charowinbackend.service.ExerciseService;
 
 @Rollback(value=true)
 @Transactional

@@ -26,10 +26,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.davidartmann.fitnessbackend.dto.WorkoutDto;
-import de.davidartmann.fitnessbackend.model.Workout;
-import de.davidartmann.fitnessbackend.model.constants.Weekday;
-import de.davidartmann.fitnessbackend.service.WorkoutService;
+import de.davidartmann.charowinbackend.dto.WorkoutDto;
+import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.constants.Weekday;
+import de.davidartmann.charowinbackend.service.WorkoutService;
 
 @Rollback(value=true)
 @Transactional
