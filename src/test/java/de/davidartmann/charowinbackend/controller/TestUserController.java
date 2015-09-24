@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.davidartmann.charowinbackend.dto.UserDto;
@@ -53,8 +54,7 @@ public class TestUserController {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		
 		mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(
-				com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+		mapper.setSerializationInclusion(Include.NON_NULL);
 		
 		dto = new UserDto();
 		dto.setActive(true);
