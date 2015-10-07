@@ -23,7 +23,7 @@ public class UserService implements IService<UserDto, User> {
 	@Autowired
 	private DietplanService dietplanService;
 	@Autowired
-	private WorkoutService workoutService;
+	private WorkoutPlanService workoutPlanService;
 	
 	/**
 	 * Method to create a new {@link User} by a given {@link UserDto}.
@@ -46,11 +46,11 @@ public class UserService implements IService<UserDto, User> {
 				LOG.debug("UserDto without dietplanIds");
 			}
 			user.setName(userDto.getName());
-			if (userDto.getWorkoutIds() != null &&
-					!userDto.getWorkoutIds().isEmpty()) {
-				user.setWorkouts(workoutService.getByIds(userDto.getWorkoutIds()));
+			if (userDto.getWorkoutPlanIds() != null &&
+					!userDto.getWorkoutPlanIds().isEmpty()) {
+				user.setWorkoutPlans(workoutPlanService.getByIds(userDto.getWorkoutPlanIds()));
 			} else {
-				LOG.debug("UserDto without workoutIds");
+				LOG.debug("UserDto without workoutPlanIds");
 			}
 			user = userRepository.save(user);
 			LOG.info("Created User with id {}", user.getId());
@@ -119,11 +119,11 @@ public class UserService implements IService<UserDto, User> {
 					LOG.debug("UserDto without dietplanIds");
 				}
 				user.setName(userDto.getName());
-				if (userDto.getWorkoutIds() != null &&
-						!userDto.getWorkoutIds().isEmpty()) {
-					user.setWorkouts(workoutService.getByIds(userDto.getWorkoutIds()));
+				if (userDto.getWorkoutPlanIds() != null &&
+						!userDto.getWorkoutPlanIds().isEmpty()) {
+					user.setWorkoutPlans(workoutPlanService.getByIds(userDto.getWorkoutPlanIds()));
 				} else {
-					LOG.debug("UserDto without workoutIds");
+					LOG.debug("UserDto without workoutPlanIds");
 				}
 				user = userRepository.save(user);
 				LOG.info("Updated User with id {}", user.getId());

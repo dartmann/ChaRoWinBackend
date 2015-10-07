@@ -69,7 +69,7 @@ public class UserController implements IController<UserDto, User> {
 		List<Long> workoutIds = new ArrayList<Long>();
 		workoutIds.add(RandomUtils.nextLong(1, 5));
 		workoutIds.add(RandomUtils.nextLong(6, 10));
-		userDto.setWorkoutIds(workoutIds);
+		userDto.setWorkoutPlanIds(workoutIds);
 		return userService.create(userDto);
 	}
 

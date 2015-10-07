@@ -6,8 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import de.davidartmann.charowinbackend.model.Exercise;
-import de.davidartmann.charowinbackend.model.User;
 import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.WorkoutPlan;
 import de.davidartmann.charowinbackend.model.WorkoutSession;
 
 /**
@@ -29,5 +29,5 @@ public interface WorkoutRepository extends CrudRepository<Workout, Long> {
 	
 	public Workout findByWorkoutSessions(WorkoutSession workoutSession);
 	
-	public List<Workout> findByUser(User user);
+	public List<Workout> findByWorkoutPlan(WorkoutPlan workoutPlan);
 }

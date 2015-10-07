@@ -20,7 +20,7 @@ public class WorkoutDto extends BaseDto {
 	
 	private List<Long> workoutSessionIds;
 	
-	private Long userId;
+	private Long workoutPlanId;
 
 	public String getName() {
 		return name;
@@ -62,11 +62,11 @@ public class WorkoutDto extends BaseDto {
 		this.workoutSessionIds = workoutSessionIds;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Long getWorkoutPlanId() {
+		return workoutPlanId;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setWorkoutPlanId(Long workoutPlanId) {
+		this.workoutPlanId = workoutPlanId;
 	}
 }

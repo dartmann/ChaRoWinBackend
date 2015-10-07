@@ -21,7 +21,7 @@ public class UserDto extends BaseDto {
 	
 	private List<Long> dietplanIds;
 	
-	private List<Long> workoutIds;
+	private List<Long> workoutPlanIds;
 
 	public String getName() {
 		return name;
@@ -71,11 +71,11 @@ public class UserDto extends BaseDto {
 		this.dietplanIds = dietplanIds;
 	}
 
-	public List<Long> getWorkoutIds() {
-		return workoutIds;
+	public List<Long> getWorkoutPlanIds() {
+		return workoutPlanIds;
 	}
 
-	public void setWorkoutIds(List<Long> workoutIds) {
-		this.workoutIds = workoutIds;
+	public void setWorkoutPlanIds(List<Long> workoutPlanIds) {
+		this.workoutPlanIds = workoutPlanIds;
 	}
 }

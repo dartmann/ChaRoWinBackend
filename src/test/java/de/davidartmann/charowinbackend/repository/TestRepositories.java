@@ -3,11 +3,14 @@ package de.davidartmann.charowinbackend.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,17 +27,9 @@ import de.davidartmann.charowinbackend.model.Meal;
 import de.davidartmann.charowinbackend.model.Muscle;
 import de.davidartmann.charowinbackend.model.User;
 import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.WorkoutPlan;
 import de.davidartmann.charowinbackend.model.WorkoutSession;
-import de.davidartmann.charowinbackend.model.constants.ActivityIndex;
 import de.davidartmann.charowinbackend.model.constants.Weekday;
-import de.davidartmann.charowinbackend.repository.DietplanRepository;
-import de.davidartmann.charowinbackend.repository.ExerciseRepository;
-import de.davidartmann.charowinbackend.repository.FoodRepository;
-import de.davidartmann.charowinbackend.repository.MealRepository;
-import de.davidartmann.charowinbackend.repository.MuscleRepository;
-import de.davidartmann.charowinbackend.repository.UserRepository;
-import de.davidartmann.charowinbackend.repository.WorkoutRepository;
-import de.davidartmann.charowinbackend.repository.WorkoutSessionRepository;
 
 @Rollback(value=true)
 @Transactional
@@ -58,6 +53,8 @@ public class TestRepositories {
 	private WorkoutRepository workoutRepository;
 	@Autowired
 	private WorkoutSessionRepository workoutSessionRepository;
+	@Autowired
+	private WorkoutPlanRepository workoutPlanRepository;
 	
 	private String name;
 	
@@ -242,13 +239,12 @@ public class TestRepositories {
 	@Test
 	public void testWorkoutRepository() {
 		assertNotNull(workoutRepository.findAll());
-		User user = new User();
-		user.setActive(true);
-		user.setActivityIndex(ActivityIndex.MIDDLE);
-		user.setAge(25);
-		user.setBodyHeight(185D);
-		user.setBodyWeight(90D);
-		user.setName(name);
+		WorkoutPlan workoutPlan = new WorkoutPlan();
+		workoutPlan.setActive(true);
+		workoutPlan.setAmountDays(4);
+		workoutPlan.setCurrent(true);
+		workoutPlan.setDescription(RandomStringUtils.randomAlphabetic(20));
+		workoutPlan.setName(name);
 		WorkoutSession workoutSession = new WorkoutSession();
 		workoutSession.setActive(true);
 		Long date = new Date().getTime();
@@ -260,21 +256,21 @@ public class TestRepositories {
 		workout.setName(name);
 		workout.setNumberOfDay(Weekday.MONDAY_NUMERIC);
 		workout.setWeekday(Weekday.MONDAY);
-		workout.setUser(user);
 		Exercise exercise = new Exercise();
 		exercise.setActive(true);
 		exercise.setName(name);
 		List<Workout> workouts = new ArrayList<Workout>();
 		workouts.add(workout);
+		workoutPlan.setWorkouts(workouts);
 		exercise.setWorkouts(workouts);
-		user.setWorkouts(workouts);
 		List<Exercise> exercises = new ArrayList<Exercise>();
 		exercises.add(exercise);
 		workout.setExercises(exercises);
 		workout = workoutRepository.save(workout);
 		exercise = exerciseRepository.save(exercise);
 		workoutSession = workoutSessionRepository.save(workoutSession);
-		user = userRepository.save(user);
+		workoutPlan = workoutPlanRepository.save(workoutPlan);
+		workout.setWorkoutPlan(workoutPlan);
 		assertNotNull(workoutRepository.findOne(workout.getId()));
 		assertNotNull(workoutRepository.findByName(name));
 		assertEquals(true, workoutRepository.findByName(name).size() > 0);
@@ -286,8 +282,8 @@ public class TestRepositories {
 		assertEquals(true, workoutRepository.findByExercises(exercise).size() > 0);
 		assertNotNull(workoutRepository.findByWorkoutSessions(workoutSession));
 		assertEquals(workout.getId(), workoutRepository.findByWorkoutSessions(workoutSession).getId());
-		assertNotNull(workoutRepository.findByUser(user));
-		assertEquals(true, workoutRepository.findByUser(user).size() > 0);
+		assertNotNull(workoutRepository.findByWorkoutPlan(workoutPlan));
+		assertEquals(true, workoutRepository.findByWorkoutPlan(workoutPlan).size() > 0);
 		workoutRepository.delete(workout);
 		assertNull(workoutRepository.findOne(workout.getId()));
 	}
@@ -313,5 +309,38 @@ public class TestRepositories {
 					.findByEndOfWorkoutLessThanEqual(dateLong).size() > 0);
 		workoutSessionRepository.delete(workoutSession);
 		assertNull(workoutSessionRepository.findOne(workoutSession.getId()));
+	}
+	
+	@Test
+	public void testWorkoutPlanRepository() {
+		assertNotNull(workoutPlanRepository.findAll());
+		User user = new User();
+		user.setActive(true);
+		user.setName(name);
+		user = userRepository.save(user);
+		Workout workout = new Workout();
+		workout.setActive(true);
+		workout.setName(name);
+		workout = workoutRepository.save(workout);
+		List<Workout> workouts = new ArrayList<Workout>();
+		workouts.add(workout);
+		WorkoutPlan workoutPlan = new WorkoutPlan();
+		workoutPlan.setActive(true);
+		workoutPlan.setAmountDays(RandomUtils.nextInt(1, 7));
+		workoutPlan.setCurrent(true);
+		workoutPlan.setDescription(RandomStringUtils.randomAlphabetic(20));
+		workoutPlan.setName(name);
+		workoutPlan.setUser(user);
+		workoutPlan.setWorkouts(workouts);
+		workoutPlan = workoutPlanRepository.save(workoutPlan);
+		workout.setWorkoutPlan(workoutPlan);
+		assertNotNull(workoutPlanRepository.findOne(workoutPlan.getId()));
+		assertTrue(workoutPlanRepository.findByAmountDays(workoutPlan.getAmountDays()).size() > 0);
+		assertTrue(workoutPlanRepository.findByDescription(workoutPlan.getDescription()).size() > 0);
+		assertTrue(workoutPlanRepository.findByName(name).size() > 0);
+		assertTrue(workoutPlanRepository.findByUser(user).size() > 0);
+		assertNotNull(workoutPlanRepository.findByWorkouts(workout));
+		workoutPlanRepository.delete(workoutPlan);
+		assertNull(workoutPlanRepository.findOne(workoutPlan.getId()));
 	}
 }

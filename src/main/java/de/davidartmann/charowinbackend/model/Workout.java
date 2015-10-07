@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 /**
  * The model class for a workout.
- * It references the {@link Exercise} and gets referenced by {@link User} with {@link OneToMany}.
+ * It references the {@link Exercise} and gets referenced by {@link WorkoutPlan} with {@link OneToMany}.
  * @author David Artmann
  */
 @Entity
@@ -38,8 +38,16 @@ public class Workout extends BaseModel {
 	private List<WorkoutSession> workoutSessions;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
-	private User user;
+	@JoinColumn(name="workoutPlan_id")
+	private WorkoutPlan workoutPlan;
+
+	public WorkoutPlan getWorkoutPlan() {
+		return workoutPlan;
+	}
+
+	public void setWorkoutPlan(WorkoutPlan workoutPlan) {
+		this.workoutPlan = workoutPlan;
+	}
 
 	public String getWeekday() {
 		return weekday;
@@ -61,16 +69,8 @@ public class Workout extends BaseModel {
 		return exercises;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
 	public void setExercises(List<Exercise> exercises) {
 		this.exercises = exercises;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public Integer getNumberOfDay() {

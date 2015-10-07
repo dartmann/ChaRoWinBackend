@@ -34,12 +34,20 @@ public class User extends BaseModel {
 	
 	@Column(name="activity_index")
 	private Double activityIndex;
-	
-	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
-	private List<Workout> workouts;
 
 	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
 	private List<Dietplan> dietplans;
+	
+	@OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+	private List<WorkoutPlan> workoutPlans;
+
+	public List<WorkoutPlan> getWorkoutPlans() {
+		return workoutPlans;
+	}
+
+	public void setWorkoutPlans(List<WorkoutPlan> workoutPlans) {
+		this.workoutPlans = workoutPlans;
+	}
 
 	public String getName() {
 		return name;
@@ -80,17 +88,9 @@ public class User extends BaseModel {
 	public void setActivityIndex(Double activityIndex) {
 		this.activityIndex = activityIndex;
 	}
-
-	public List<Workout> getWorkouts() {
-		return workouts;
-	}
 	
 	public List<Dietplan> getDietplans() {
 		return dietplans;
-	}
-
-	public void setWorkouts(List<Workout> workouts) {
-		this.workouts = workouts;
 	}
 
 	public void setDietplans(List<Dietplan> dietplans) {

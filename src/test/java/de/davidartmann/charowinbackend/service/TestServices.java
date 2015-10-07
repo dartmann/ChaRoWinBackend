@@ -1,13 +1,15 @@
 package de.davidartmann.charowinbackend.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-
-import static org.junit.Assert.*;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,7 @@ import de.davidartmann.charowinbackend.dto.MealDto;
 import de.davidartmann.charowinbackend.dto.MuscleDto;
 import de.davidartmann.charowinbackend.dto.UserDto;
 import de.davidartmann.charowinbackend.dto.WorkoutDto;
+import de.davidartmann.charowinbackend.dto.WorkoutPlanDto;
 import de.davidartmann.charowinbackend.dto.WorkoutSessionDto;
 import de.davidartmann.charowinbackend.model.Dietplan;
 import de.davidartmann.charowinbackend.model.Exercise;
@@ -32,17 +35,10 @@ import de.davidartmann.charowinbackend.model.Meal;
 import de.davidartmann.charowinbackend.model.Muscle;
 import de.davidartmann.charowinbackend.model.User;
 import de.davidartmann.charowinbackend.model.Workout;
+import de.davidartmann.charowinbackend.model.WorkoutPlan;
 import de.davidartmann.charowinbackend.model.WorkoutSession;
 import de.davidartmann.charowinbackend.model.constants.ActivityIndex;
 import de.davidartmann.charowinbackend.model.constants.Weekday;
-import de.davidartmann.charowinbackend.service.DietplanService;
-import de.davidartmann.charowinbackend.service.ExerciseService;
-import de.davidartmann.charowinbackend.service.FoodService;
-import de.davidartmann.charowinbackend.service.MealService;
-import de.davidartmann.charowinbackend.service.MuscleService;
-import de.davidartmann.charowinbackend.service.UserService;
-import de.davidartmann.charowinbackend.service.WorkoutService;
-import de.davidartmann.charowinbackend.service.WorkoutSessionService;
 
 @Rollback(value=true)
 @Transactional
@@ -66,6 +62,8 @@ public class TestServices {
 	private WorkoutService workoutService;
 	@Autowired
 	private WorkoutSessionService workoutSessionService;
+	@Autowired
+	private WorkoutPlanService workoutPlanService;
 	
 	@Test
 	public void testDietplanService() {
@@ -267,5 +265,28 @@ public class TestServices {
 		assertEquals(sessionDto.getActive(), updatedSession.getActive());
 		assertEquals(true, 
 				workoutSessionService.deleteById(session2.getId()));
+	}
+	
+	@Test
+	public void testWorkoutPlanService() {
+		WorkoutPlanDto workoutPlanDto = new WorkoutPlanDto();
+		workoutPlanDto.setActive(true);
+		workoutPlanDto.setAmountDays(RandomUtils.nextInt(1, 7));
+		workoutPlanDto.setCurrent(true);
+		workoutPlanDto.setDescription(RandomStringUtils.randomAlphabetic(20));
+		workoutPlanDto.setName(RandomStringUtils.randomAlphabetic(10));
+		WorkoutPlan workoutPlan = workoutPlanService.create(workoutPlanDto);
+		assertNotNull(workoutPlan);
+		assertNotNull(workoutPlanService.getById(workoutPlan.getId()));
+		WorkoutPlan workoutPlan2 = workoutPlanService.create(workoutPlanDto);
+		List<Long> ids = new ArrayList<Long>();
+		ids.add(workoutPlan.getId());
+		ids.add(workoutPlan2.getId());
+		assertEquals(ids.size(), workoutPlanService.getByIds(ids).size());
+		workoutPlanDto.setActive(false);
+		WorkoutPlan updatedWorkoutPlan = 
+				workoutPlanService.updateById(workoutPlan.getId(), workoutPlanDto);
+		assertEquals(workoutPlanDto.getActive(), updatedWorkoutPlan.getActive());
+		assertTrue(workoutPlanService.deleteById(workoutPlan.getId()));
 	}
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.davidartmann.charowinbackend.dto.WorkoutDto;
-import de.davidartmann.charowinbackend.model.User;
 import de.davidartmann.charowinbackend.model.Workout;
 import de.davidartmann.charowinbackend.repository.WorkoutRepository;
 
@@ -24,7 +23,7 @@ public class WorkoutService implements IService<WorkoutDto, Workout> {
 	@Autowired
 	private ExerciseService exerciseService;
 	@Autowired
-	private UserService userService;
+	private WorkoutPlanService workoutPlanService;
 	@Autowired
 	private WorkoutSessionService workoutSessionService;
 	
@@ -65,39 +64,35 @@ public class WorkoutService implements IService<WorkoutDto, Workout> {
 	
 	/**
 	 * Creates {@link Workout} by given {@link WorkoutDto}
-	 * @param dto
+	 * @param workoutDto
 	 * @return Workout or null
 	 */
-	public Workout create(WorkoutDto dto) {
+	public Workout create(WorkoutDto workoutDto) {
 		Workout workout = null;
-		if (dto != null) {
+		if (workoutDto != null) {
 			workout = new Workout();
-			workout.setActive(dto.getActive());
-			if (dto.getExerciseIds() != null 
-					&& !dto.getExerciseIds().isEmpty()) {
+			workout.setActive(workoutDto.getActive());
+			if (workoutDto.getExerciseIds() != null 
+					&& !workoutDto.getExerciseIds().isEmpty()) {
 				workout.setExercises(
-						exerciseService.getByIds(dto.getExerciseIds()));
+						exerciseService.getByIds(workoutDto.getExerciseIds()));
 			} else {
 				LOG.debug("WorkoutDto without exerciseIds");
 			}			
-			workout.setName(dto.getName());
-			workout.setNumberOfDay(dto.getNumberOfDay());
-			if (dto.getUserId() != null) {
-				User user = userService.getById(dto.getUserId());
-				if (user != null) {
-					workout.setUser(user);
-				} else {
-					LOG.debug("WorkoutDto with invalid userId");
-				}
+			workout.setName(workoutDto.getName());
+			workout.setNumberOfDay(workoutDto.getNumberOfDay());
+			if (workoutDto.getWorkoutPlanId() != null) {
+				workout.setWorkoutPlan(workoutPlanService.getById(
+						workoutDto.getWorkoutPlanId()));
 			} else {
-				LOG.debug("WorkoutDto without userId");
-			}			
-			workout.setWeekday(dto.getWeekday());
-			if (dto.getWorkoutSessionIds() != null 
-					&& !dto.getWorkoutSessionIds().isEmpty()) {
+				LOG.debug("WorkoutDto without workoutPlanId");
+			}
+			workout.setWeekday(workoutDto.getWeekday());
+			if (workoutDto.getWorkoutSessionIds() != null 
+					&& !workoutDto.getWorkoutSessionIds().isEmpty()) {
 				workout.setWorkoutSessions(
 						workoutSessionService.getByIds(
-								dto.getWorkoutSessionIds()));
+								workoutDto.getWorkoutSessionIds()));
 			} else {
 				LOG.debug("WorkoutDto without workoutSessionIds");
 			}
@@ -117,7 +112,7 @@ public class WorkoutService implements IService<WorkoutDto, Workout> {
 	 */
 	public Workout updateById(Long id, WorkoutDto workoutDto) {
 		Workout workout = null;
-		if (workoutDto != null) {
+		if (workoutDto != null && id != null) {
 			workout = getById(id);
 			if (workout != null) {
 				workout.setActive(workoutDto.getActive());
@@ -131,11 +126,12 @@ public class WorkoutService implements IService<WorkoutDto, Workout> {
 				}			
 				workout.setName(workoutDto.getName());
 				workout.setNumberOfDay(workoutDto.getNumberOfDay());
-				if (workoutDto.getUserId() != null) {
-					workout.setUser(userService.getById(workoutDto.getUserId()));
+				if (workoutDto.getWorkoutPlanId() != null) {
+					workout.setWorkoutPlan(workoutPlanService.getById(
+							workoutDto.getWorkoutPlanId()));
 				} else {
-					LOG.debug("WorkoutDto without userId");
-				}			
+					LOG.debug("WorkoutDto without workoutPlanId");
+				}
 				workout.setWeekday(workoutDto.getWeekday());
 				if (workoutDto.getWorkoutSessionIds() != null 
 						&& !workoutDto.getWorkoutSessionIds().isEmpty()) {
